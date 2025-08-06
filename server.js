@@ -12,10 +12,20 @@ require('./config/db');
 
 app.use(morgan('dev'));
 const corsOptions = {
-  origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'https://basic-firewall-simulation-frontend.vercel.app/'],
+  origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'https://basic-firewall-simulation-frontend.vercel.app'],
   credentials: true,
 };
+
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
