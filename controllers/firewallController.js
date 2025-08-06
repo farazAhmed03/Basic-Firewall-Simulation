@@ -37,6 +37,8 @@ exports.getRules = async (req, res) => {
 exports.simulatePacket = async (req, res) => {
     try {
         const packet = req.body;
+        packet.port = parseInt(packet.port);
+
         const rules = await Rule.find({ userId: req.user.id });
         let action = 'deny';
 
@@ -45,19 +47,18 @@ exports.simulatePacket = async (req, res) => {
                 rule.protocol.toLowerCase() === packet.protocol.toLowerCase() &&
                 rule.sourceIp === packet.sourceIp &&
                 rule.destIp === packet.destIp &&
-                parseInt(rule.port) === parseInt(packet.port)
+                rule.port === packet.port
             ) {
                 action = rule.action;
                 break;
             }
         }
-
         res.status(200).json({
             success: true,
             message: 'Simulation successful',
             action
         })
-        
+
     } catch (error) {
         res.status(500).json({
             success: false,
