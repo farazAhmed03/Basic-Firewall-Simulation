@@ -7,6 +7,6 @@ const auth = require('../middleware/authMiddleware');
 router.get('/rules', auth, firewallController.getRules);
 router.post('/rules', auth, firewallController.createRule);
 router.post('/simulate', auth, firewallController.simulatePacket);
-router.delete('/rules/:id', firewallController.deleteRule);
+router.delete('/rules/:id', auth, firewallController.deleteRule);
 
 module.exports = router;
