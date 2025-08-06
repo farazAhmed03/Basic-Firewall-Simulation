@@ -39,19 +39,25 @@ exports.simulatePacket = async (req, res) => {
         const packet = req.body;
         const rules = await Rule.find({ userId: req.user.id });
         let action = 'deny';
+
         for (const rule of rules) {
-            if (rule.protocol === packet.protocol &&
+            if (
+                rule.protocol.toLowerCase() === packet.protocol.toLowerCase() &&
                 rule.sourceIp === packet.sourceIp &&
                 rule.destIp === packet.destIp &&
-                rule.port === packet.port) {
+                parseInt(rule.port) === parseInt(packet.port)
+            ) {
                 action = rule.action;
                 break;
             }
         }
-        res.json({
+
+        res.status(200).json({
             success: true,
+            message: 'Simulation successful',
             action
-        });
+        })
+        
     } catch (error) {
         res.status(500).json({
             success: false,
