@@ -67,3 +67,33 @@ exports.simulatePacket = async (req, res) => {
         });
     }
 };
+
+
+exports.deleteRule = async (req, res) => {
+    try {
+        const ruleId = req.params.id;
+        const deleted = await Rule.findOneAndDelete({
+            _id: ruleId,
+            userId: req.user.id,
+        });
+
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                message: 'Rule not found or not authorized',
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Rule deleted successfully',
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete rule',
+            error: error.message,
+        });
+    }
+};
